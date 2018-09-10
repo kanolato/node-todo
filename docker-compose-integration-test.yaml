@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:4.0.2
+    ports:
+      - 27017:27017
+  node-todo:
+    build: .
+    depends_on: 
+      - mongo
+    environment:
+      - SERVER_PORT=8080
+      - MONGO=mongo:27017
+    command: ["/usr/src/app/wait-for-it.sh", "mongo:27017", "--", "npm", "run", "test"]
+    ports:
+      - 8080:8080

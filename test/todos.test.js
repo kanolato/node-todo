@@ -34,7 +34,7 @@ describe('Todos Tests', () => {
 
   describe('Delete todo', () => {
     it('should delete a todo', (done) => {
-      request(app).delete('/api/todos' + todo.id).end((err, res) => {
+      request(app).delete('/api/todos/' + todo.id).end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body).to.be.an('array');
         done();

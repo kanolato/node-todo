@@ -18,6 +18,6 @@
   },
   "scripts":{
     "start": "node server.js",
-    "test": "mocha --bail"
+    "test": "mocha --exit"
   }
 }
