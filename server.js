@@ -2,7 +2,7 @@
 var express = require('express');
 var app = express(); 						// create our app w/ express
 var mongoose = require('mongoose'); 				// mongoose for mongodb
-var port = process.env.PORT || 8080; 				// set the port
+var port = process.env.SERVER_PORT || 8080; 				// set the port
 var database = require('./config/database'); 			// load the database config
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
@@ -18,6 +18,8 @@ app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({type: 'application/vnd.api+json'})); // parse application/vnd.api+json as json
 app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request
 
+// health reporting ============================================================
+require('./app/healthReporting')(app, mongoose);
 
 // routes ======================================================================
 require('./app/routes.js')(app);
@@ -25,3 +27,5 @@ require('./app/routes.js')(app);
 // listen (start app with node server.js) ======================================
 app.listen(port);
 console.log("App listening on port " + port);
+
+module.exports = app;
