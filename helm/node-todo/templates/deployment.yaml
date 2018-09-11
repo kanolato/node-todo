@@ -1,0 +1,66 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "node-todo.fullname" . }}
+  labels:
+    app: {{ template "node-todo.name" . }}
+    chart: {{ template "node-todo.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "node-todo.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "node-todo.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.branch }}-{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "node-todo.fullname" . }}
+                  key: serverPort
+            - name: MONGO
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "node-todo.fullname" . }}
+                  key: mongoUrl
+          ports:
+            - name: http
+              containerPort: {{ .Values.serverPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /probes/healthz
+              port: http
+            initialDelaySeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /probes/readinezz
+              port: http
+            initialDelaySeconds: 5
+            failureThreshold: 5
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

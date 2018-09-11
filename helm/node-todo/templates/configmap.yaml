@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "node-todo.fullname" . }}
+  labels:
+    app: {{ template "node-todo.name" . }}
+    chart: {{ template "node-todo.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  serverPort: {{ .Values.serverPort | quote}}
+  mongoUrl: "{{ .Release.Name }}-mongodb:{{ .Values.mongodb.service.port }}"
