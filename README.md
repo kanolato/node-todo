@@ -13,5 +13,9 @@ Run node-todo and mongo:
 ```
 docker-compose up --build
 ```
+Run tests:
+```
+./integration-test.sh
+```
 The app will be running on [localhost:8080](http://localhost:8080).
 > The `docker-compose.yaml` has no volume so all the information stored in mongo is ephemeral.
